@@ -34,6 +34,7 @@ require("./config/passportConfig");
 // Routes
 app.use("/auth", require("./routes/authRoutes"));
 app.use("/", require("./routes/indexRoutes"));
+app.use("/api/recommend", require("./routes/recommendationRoutes"));
 
 // Start the server
 const port = process.env.PORT || 3000;
