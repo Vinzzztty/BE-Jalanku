@@ -88,7 +88,10 @@ router.get(
             { expiresIn: "1h" }
         );
         // Redirect or send token as per your application's flow
-        res.redirect(`https://www.jalanku.xyz/home?token=${token}`);
+        // res.redirect(`https://www.jalanku.xyz/home?token=${token}`);
+
+        // Respond with JSON containing the token
+        res.json({ token });
     }
 );
 
