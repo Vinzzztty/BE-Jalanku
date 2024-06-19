@@ -39,7 +39,9 @@ router.get(
     passport.authenticate("google", { failureRedirect: "/login" }),
     (req, res) => {
         // Redirect to the client application with the token as a query parameter
-        res.redirect(`http://localhost:3000/profile?token=${req.user.token}`);
+        res.redirect(
+            `https://be-jalanku.vercel.app/profile?token=${req.user.token}`
+        );
     }
 );
 
