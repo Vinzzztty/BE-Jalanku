@@ -43,12 +43,27 @@ router.get(
     }
 );
 
+// router.get("/logout", (req, res) => {
+//     req.logout((err) => {
+//         if (err) {
+//             return res.status(500).send("Error logging out");
+//         }
+//         res.redirect("http://localhost:3000");
+//     });
+// });
+
 router.get("/logout", (req, res) => {
     req.logout((err) => {
         if (err) {
             return res.status(500).send("Error logging out");
         }
-        res.redirect("http://localhost:3000");
+        req.session.destroy((err) => {
+            if (err) {
+                return res.status(500).send("Error destroying session");
+            }
+            res.clearCookie("connect.sid"); // Ensure session cookie is cleared
+            res.redirect("http://localhost:3000"); // Redirect to home or login page
+        });
     });
 });
 
