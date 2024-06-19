@@ -48,6 +48,6 @@ router.get("/logout", (req, res) => {
     // req.logout();
 
     // Redirect to home or login page
-    res.redirect("https://www.jalanku.xyz/");
+    res.redirect("/");
 });
 module.exports = router;
