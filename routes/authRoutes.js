@@ -63,6 +63,21 @@ router.get(
             // Set token in cookies
             // This part remains the same as before
 
+            // Save token to database
+            const newToken = new Token({
+                userId: req.user._id,
+                token: token,
+            });
+            await newToken.save();
+
+            // Set token in cookies
+            res.cookie("jwt", token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production", // Set to true if using HTTPS
+                sameSite: "none", // Adjust according to your setup (e.g., "lax", "strict", "none")
+                maxAge: 3600000, // 1 hour (expiration time)
+            });
+
             res.send(`
                 <script>
                     document.cookie = 'jwt=${token};max-age=3600;secure;SameSite=None';
