@@ -8,8 +8,8 @@ passport.use(
         {
             clientID: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            callbackURL: "https://be-jalanku.vercel.app/auth/google/callback",
-            // passReqToCallback: true,
+            // callbackURL: "https://be-jalanku.vercel.app/auth/google/callback",
+            callbackURL: "http://localhost:5000/auth/google/callback",
         },
         async (accessToken, refreshToken, profile, done) => {
             try {
@@ -30,18 +30,6 @@ passport.use(
                         email: email,
                     });
                 }
-
-                // Generate a JWT token
-                const token = jwt.sign(
-                    { id: user.id, email: user.email },
-                    process.env.JWT_SECRET,
-                    {
-                        expiresIn: "1h", // Token expires in 1 hour
-                    }
-                );
-
-                // Include the token in the user object
-                user.token = token;
 
                 return done(null, user);
             } catch (error) {

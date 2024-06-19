@@ -1,28 +1,7 @@
 const express = require("express");
 const passport = require("passport");
 const router = express.Router();
-
-// router.get(
-//     "/google",
-//     passport.authenticate("google", { scope: ["profile", "email"] })
-// );
-
-// router.get(
-//     "/google/callback",
-//     passport.authenticate("google", { failureRedirect: "/login" }),
-//     (req, res) => {
-//         res.redirect("https://www.jalanku.xyz/");
-//     }
-// );
-
-// router.get("/logout", (req, res) => {
-//     req.logout((err) => {
-//         if (err) {
-//             return res.status(500).send("Error logging out");
-//         }
-//         res.redirect("/");
-//     });
-// });
+const jwt = require("jsonwebtoken");
 
 router.get(
     "/login",
@@ -38,35 +17,36 @@ router.get(
     "/google/callback",
     passport.authenticate("google", { failureRedirect: "/login" }),
     (req, res) => {
-        // Redirect to the client application with the token as a query parameter
-        res.redirect(
-            `https://be-jalanku.vercel.app/profile?token=${req.user.token}`
+        // Generate a JWT token
+        const token = jwt.sign(
+            { id: req.user._id, email: req.user.email },
+            process.env.JWT_SECRET,
+            {
+                expiresIn: "1h", // Token expires in 1 hour
+            }
         );
+
+        // Set token in cookies
+        res.cookie("jwt", token, {
+            httpOnly: true,
+            secure: true, // Set to true if using HTTPS
+            sameSite: "none", // Adjust according to your setup (e.g., "lax", "strict")
+            maxAge: 3600000, // 1 hour (expiration time)
+        });
+
+        // Redirect to the profile page
+        res.redirect("/");
     }
 );
 
-// router.get("/logout", (req, res) => {
-//     req.logout((err) => {
-//         if (err) {
-//             return res.status(500).send("Error logging out");
-//         }
-//         res.redirect("http://localhost:3000");
-//     });
-// });
-
 router.get("/logout", (req, res) => {
-    req.logout((err) => {
-        if (err) {
-            return res.status(500).send("Error logging out");
-        }
-        req.session.destroy((err) => {
-            if (err) {
-                return res.status(500).send("Error destroying session");
-            }
-            res.clearCookie("connect.sid"); // Ensure session cookie is cleared
-            res.redirect("http://localhost:3000"); // Redirect to home or login page
-        });
-    });
-});
+    // Clear the JWT cookie
+    res.clearCookie("jwt");
 
+    // Logout using Passport.js
+    // req.logout();
+
+    // Redirect to home or login page
+    res.redirect("http://localhost:5000");
+});
 module.exports = router;
