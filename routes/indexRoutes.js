@@ -1,46 +1,15 @@
-// const express = require("express");
-// const router = express.Router();
-// const ensureAuthenticated = require("../middleware/ensureAuthenticated");
-// const authenticateJWT = require("../middleware/auth");
-
-// router.get("/profile", ensureAuthenticated, (req, res) => {
-//     res.send("Welcome to your profile, " + req.user.username);
-// });
-
-// router.get("/profile2", authenticateJWT, (req, res) => {
-//     // Access the authenticated user's data through req.user
-//     res.send({ user: req.user });
-// });
-
-// module.exports = router;
-
-/////////////////////////////
-
-// routes/index.js
 const express = require("express");
 const router = express.Router();
+const ensureAuthenticated = require("../middleware/ensureAuthenticated");
+const authenticateJWT = require("../middleware/auth");
 
-// Index route
-router.get("/", (req, res) => {
-    res.send("Welcome to JalanKu!");
+router.get("/profile", ensureAuthenticated, (req, res) => {
+    res.send("Welcome to your profile, " + req.user.username);
 });
 
-// Protected route
-router.get("/home", authenticateToken, (req, res) => {
-    res.send("Protected route accessed successfully!");
+router.get("/profile2", authenticateJWT, (req, res) => {
+    // Access the authenticated user's data through req.user
+    res.send({ user: req.user });
 });
-
-// Authentication middleware
-function authenticateToken(req, res, next) {
-    const token = req.cookies.jwt;
-
-    if (!token) return res.sendStatus(401);
-
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-        if (err) return res.sendStatus(403);
-        req.user = user;
-        next();
-    });
-}
 
 module.exports = router;

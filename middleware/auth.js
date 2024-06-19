@@ -1,22 +1,21 @@
 const jwt = require("jsonwebtoken");
 
-function authenticateJWT(req, res, next) {
-    // Read the JWT token from the request header
-    const authHeader = req.headers.authorization;
-    if (authHeader) {
-        const token = authHeader.split(" ")[1]; // Bearer <token>
+const authenticateJWT = (req, res, next) => {
+    const token = req.header("Authorization").replace("Bearer ", "");
 
-        // Verify JWT token
-        jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-            if (err) {
-                return res.status(403).send("Forbidden");
-            }
-            req.user = user; // Set the authenticated user data in the request object
-            next(); // User is authenticated, continue to the next middleware or route handler
-        });
-    } else {
-        res.status(401).send("Unauthorized");
+    if (!token) {
+        return res
+            .status(401)
+            .send({ error: "Access denied. No token provided." });
     }
-}
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = decoded;
+        next();
+    } catch (ex) {
+        res.status(400).send({ error: "Invalid token." });
+    }
+};
 
 module.exports = authenticateJWT;

@@ -16,14 +16,6 @@ const userSchema = new mongoose.Schema(
             required: true,
             unique: true,
         },
-        jwtToken: {
-            type: String,
-            default: null,
-        },
-        jwtTokenExpiresAt: {
-            type: Date,
-            default: null,
-        },
     },
     {
         timestamps: {
