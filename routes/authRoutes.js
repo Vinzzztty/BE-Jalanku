@@ -50,6 +50,10 @@ router.get(
 
         // Respond with JSON containing the token
         res.json({ token });
+
+        // res.redirect(
+        //     `https://be-jalanku.vercel.app/profile?token=${req.user.token}`
+        // );
     }
 );
 

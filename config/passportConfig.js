@@ -8,7 +8,8 @@ passport.use(
         {
             clientID: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            callbackURL: "https://be-jalanku.vercel.app/auth/google/callback",
+            // callbackURL: "https://be-jalanku.vercel.app/auth/google/callback",
+            callbackURL: "http://localhost:3000",
         },
         async (accessToken, refreshToken, profile, done) => {
             try {
