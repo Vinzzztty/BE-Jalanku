@@ -26,6 +26,9 @@ router.get(
                 }
             );
 
+            // Log the JWT token to console
+            console.log("Generated JWT token:", token);
+
             // Set token in cookies
             res.cookie("jwt", token, {
                 httpOnly: true,
