@@ -12,36 +12,40 @@ router.get(
     "/register",
     passport.authenticate("google", { scope: ["profile", "email"] })
 );
-
 router.get(
     "/google/callback",
     passport.authenticate("google", { failureRedirect: "/login" }),
     (req, res) => {
-        // Generate a JWT token
-        const token = jwt.sign(
-            { id: req.user._id, email: req.user.email },
-            process.env.JWT_SECRET,
-            {
-                expiresIn: "1h", // Token expires in 1 hour
-            }
-        );
+        try {
+            // Generate a JWT token
+            const token = jwt.sign(
+                { id: req.user._id, email: req.user.email },
+                process.env.JWT_SECRET,
+                {
+                    expiresIn: "1h", // Token expires in 1 hour
+                }
+            );
 
-        // Set token in cookies
-        res.cookie("jwt", token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production", // Set to true if using HTTPS
-            sameSite: "none", // Adjust according to your setup (e.g., "lax", "strict", "none")
-            maxAge: 3600000, // 1 hour (expiration time)
-        });
+            // Set token in cookies
+            res.cookie("jwt", token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production", // Set to true if using HTTPS
+                sameSite: "none", // Adjust according to your setup (e.g., "lax", "strict", "none")
+                maxAge: 3600000, // 1 hour (expiration time)
+            });
 
-        // Redirect to an external URL using client-side script
-        res.send(`
-            <script>
-                // Set cookie and redirect
-                document.cookie = 'jwt=${token};max-age=3600;secure;SameSite=None';
-                window.location.href = 'https://www.jalanku.xyz/home';
-            </script>
-        `);
+            // Redirect to an external URL using client-side script
+            res.send(`
+                <script>
+                    // Set cookie and redirect
+                    document.cookie = 'jwt=${token};max-age=3600;secure;SameSite=None';
+                    window.location.href = 'https://www.jalanku.xyz/home';
+                </script>
+            `);
+        } catch (error) {
+            console.error("Error in /google/callback:", error);
+            res.status(500).send("Internal Server Error");
+        }
     }
 );
 
