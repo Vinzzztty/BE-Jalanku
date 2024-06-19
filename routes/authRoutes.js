@@ -61,16 +61,6 @@ router.get(
             const token = await jwtMiddleware.signAccessToken(req.user._id);
 
             // Set token in cookies
-            // This part remains the same as before
-
-            // Save token to database
-            const newToken = new Token({
-                userId: req.user._id,
-                token: token,
-            });
-            await newToken.save();
-
-            // Set token in cookies
             res.cookie("jwt", token, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === "production", // Set to true if using HTTPS
@@ -78,6 +68,7 @@ router.get(
                 maxAge: 3600000, // 1 hour (expiration time)
             });
 
+            // Redirect with client-side script
             res.send(`
                 <script>
                     document.cookie = 'jwt=${token};max-age=3600;secure;SameSite=None';
@@ -85,8 +76,8 @@ router.get(
                 </script>
             `);
         } catch (error) {
-            console.error("Error in /google/callback:", error);
-            res.status(500).send("Internal Server Error");
+            console.error("Error in /google/callback:", error); // Log detailed error
+            res.status(500).send("Internal Server Error"); // Send generic error response
         }
     }
 );
