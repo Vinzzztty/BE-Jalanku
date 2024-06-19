@@ -35,7 +35,8 @@ router.get(
         });
 
         // Redirect to the profile page
-        res.redirect("/");
+        // res.redirect("/");
+        res.redirect("https://www.jalanku.xyz/");
     }
 );
 
@@ -47,6 +48,6 @@ router.get("/logout", (req, res) => {
     // req.logout();
 
     // Redirect to home or login page
-    res.redirect("http://localhost:5000");
+    res.redirect("https://www.jalanku.xyz/");
 });
 module.exports = router;
