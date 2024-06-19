@@ -10,6 +10,7 @@ const recommendationSchema = new Schema({
             price: Number,
             description: String,
             rating: Number,
+            image: String,
         },
     ],
 });
