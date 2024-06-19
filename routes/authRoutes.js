@@ -29,21 +29,17 @@ router.get(
         // Set token in cookies
         res.cookie("jwt", token, {
             httpOnly: true,
-            secure: true, // Set to true if using HTTPS
-            sameSite: "none", // Adjust according to your setup (e.g., "lax", "strict")
+            secure: process.env.NODE_ENV === "production", // Set to true if using HTTPS
+            sameSite: "none", // Adjust according to your setup (e.g., "lax", "strict", "none")
             maxAge: 3600000, // 1 hour (expiration time)
         });
 
-        // Redirect to the profile page
-        // res.redirect("/");
-        // res.redirect("https://www.jalanku.xyz/");
-
-        // Use client-side script to redirect
+        // Redirect to an external URL using client-side script
         res.send(`
             <script>
                 // Set cookie and redirect
                 document.cookie = 'jwt=${token};max-age=3600;secure;SameSite=None';
-                window.location.href = 'https://www.jalanku.xyz/';
+                window.location.href = 'https://www.jalanku.xyz/home';
             </script>
         `);
     }
