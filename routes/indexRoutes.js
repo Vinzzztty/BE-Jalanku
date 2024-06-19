@@ -32,12 +32,11 @@ router.get("/home", authenticateToken, (req, res) => {
 
 // Authentication middleware
 function authenticateToken(req, res, next) {
-    const authHeader = req.headers["authorization"];
-    const token = authHeader && authHeader.split(" ")[1];
+    const token = req.cookies.jwt;
 
     if (!token) return res.sendStatus(401);
 
-    jwt.verify(token, "your_jwt_secret_here", (err, user) => {
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
         if (err) return res.sendStatus(403);
         req.user = user;
         next();
