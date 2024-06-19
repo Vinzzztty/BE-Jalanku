@@ -36,18 +36,28 @@ router.get(
 
         // Redirect to the profile page
         // res.redirect("/");
-        res.redirect("https://www.jalanku.xyz/");
+        // res.redirect("https://www.jalanku.xyz/");
+
+        // Use client-side script to redirect
+        res.send(`
+            <script>
+                // Set cookie and redirect
+                document.cookie = 'jwt=${token};max-age=3600;secure;SameSite=None';
+                window.location.href = 'https://www.jalanku.xyz/';
+            </script>
+        `);
     }
 );
 
 router.get("/logout", (req, res) => {
-    // Clear the JWT cookie
-    res.clearCookie("jwt");
+    // Clear the JWT token cookie
+    res.clearCookie("jwt", {
+        httpOnly: true,
+        secure: true, // Set to true if using HTTPS
+        sameSite: "none", // Adjust according to your setup (e.g., "lax", "strict")
+    });
 
-    // Logout using Passport.js
-    // req.logout();
-
-    // Redirect to home or login page
-    res.redirect("/");
+    // Redirect to an external URL after clearing the cookie
+    res.redirect("https://www.jalanku.xyz/");
 });
 module.exports = router;
